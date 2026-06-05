@@ -6,9 +6,16 @@ export async function onRequest({ request, env }) {
   // 1. 鉴权
   const authToken = request.headers.get("X-Auth-Token") || url.searchParams.get("token");
   if (authToken !== env.TOKEN) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+    return new Response(JSON.stringify({
+      error: "Unauthorized",
+      receivedToken: authToken,
+      envTokenExists: !!env.TOKEN,
+      envTokenLength: env.TOKEN ? env.TOKEN.length : 0
+    }), {
       status: 403,
-      headers: { "Content-Type": "application/json" }
+      headers: {
+        "Content-Type": "application/json"
+      }
     });
   }
 
